@@ -3,35 +3,19 @@ import moment, { Moment } from "moment";
 import { CalendarGrid } from "../CalendarGrid";
 import { Header } from "../Header";
 import { Navigation } from "../Navigation";
+import { Wrapper } from "./App.styled";
 
 const App = () => {
-  // window.moment = moment;
   // moment.updateLocale("en", { week: { dow: 1 } });
-  const startDay: Moment = moment().startOf("month").startOf("week");
-  // const endDay = moment().endOf("month").endOf("week");
-
-  // // console.log(startDay);
-  // // console.log(endDay);
-
-  // const calendar = [];
-  // const day = startDay.clone();
-
-  // while (!day.isAfter(endDay)) {
-  //   // calendar
-  //   console.log(day);
-
-  //   calendar.push(day.clone());
-  //   day.add(1, "day");
-  // }
-
-  // console.log(calendar);
+  const today = moment();
+  const startDay: Moment = today.clone().startOf("month").startOf("week");
 
   return (
-    <div>
+    <Wrapper>
       <Header />
-      <Navigation />
+      <Navigation today={today} />
       <CalendarGrid startDay={startDay} />{" "}
-    </div>
+    </Wrapper>
   );
 };
 
