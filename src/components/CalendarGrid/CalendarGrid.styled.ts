@@ -7,6 +7,7 @@ export const WeekDaysList = styled.ul`
   background-color: rgb(236, 237, 237);
 
   padding: 5px 0;
+  width: 100vw;
 
   color: gray;
   font-weight: 500;
@@ -20,6 +21,7 @@ export const GridWrapper = styled.ul`
   grid-template-rows: repeat(6, 1fr);
   list-style: none;
   height: 80vh;
+  width: 100vw;
   grid-gap: 3px;
   background-color: white;
 `;
@@ -41,8 +43,11 @@ export const RowInCell = styled.div<RowInCellProps>`
 `;
 
 export const DayWrapper = styled.div`
-  height: 33px;
-  width: 33px;
+  height: 28px;
+  width: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  flex-wrap: wrap;
   display: flex;
   align-content: center;
   justify-content: center;
@@ -57,4 +62,40 @@ export const CurrentDay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const HolidayList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  overflow-y: auto;
+  height: 70px;
+  margin-right: 10px;
+
+  &::-webkit-scrollbar {
+    padding-left: 50px;
+    width: 4px; /* Width of the scrollbar */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(93, 137, 220);
+    border-radius: 4px;
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgb(115, 130, 241);
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+    }
+  }
+`;
+
+export const HolidayItem = styled.li`
+  background-color: rgba(249, 108, 0, 0.51);
+  padding: 2px 5px;
+  font-weight: 500;
+  font-size: 12px;
 `;

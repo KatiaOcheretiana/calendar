@@ -11,17 +11,25 @@ import {
 
 interface NavigationPropType {
   today: Moment;
+  handlePrevMonth: () => void;
+  handleNextMonth: () => void;
+  handleCurrentMonth: () => void;
 }
 
-const Navigation = ({ today }: NavigationPropType) => {
+const Navigation = ({
+  today,
+  handlePrevMonth,
+  handleNextMonth,
+  handleCurrentMonth,
+}: NavigationPropType) => {
   return (
     <Wrapper>
       <ControlButtonWrapper>
-        <Button>
+        <Button onClick={() => handlePrevMonth()}>
           <ChevronIcon rotate={180} color="gray" />
         </Button>
 
-        <Button>
+        <Button onClick={() => handleNextMonth()}>
           <ChevronIcon color="gray" />
         </Button>
       </ControlButtonWrapper>
@@ -30,7 +38,7 @@ const Navigation = ({ today }: NavigationPropType) => {
         <span>{today.format("YYYY")}</span>
       </MonthAndYear>
       <ControlButtonWrapper>
-        <MonthButton>Month</MonthButton>
+        <MonthButton onClick={() => handleCurrentMonth()}>Month</MonthButton>
       </ControlButtonWrapper>
     </Wrapper>
   );
