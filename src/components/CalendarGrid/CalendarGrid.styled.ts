@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Modal from "styled-react-modal";
 
 export const WeekDaysList = styled.ul`
   display: flex;
@@ -94,8 +95,35 @@ export const HolidayList = styled.ul`
 `;
 
 export const HolidayItem = styled.li`
-  background-color: rgba(249, 108, 0, 0.51);
-  padding: 2px 5px;
+  background-color: rgba(252, 205, 16, 0.68);
+  border-radius: 6px;
+  padding: 4px;
+  margin: 0 2px;
   font-weight: 500;
   font-size: 12px;
+`;
+
+export const StyledModal = Modal.styled`
+ padding: 20px;
+
+ display: flex;
+ flex-direction: column;
+ 
+ gap: 10px;
+ `;
+
+export const TaskList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+export const Task = styled.li`
+  background-color: white;
+  border-radius: 6px;
+  padding: 4px;
+  margin: 0 2px;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
 `;

@@ -6,14 +6,17 @@ import {
   HolidaysService,
 } from "../../lib/services/holidaysService";
 import { CalendarGrid } from "../CalendarGrid";
-import { Header } from "../Header";
+import { Filter } from "../Filter";
 import { Navigation } from "../Navigation";
 import { Wrapper } from "./App.styled";
 
-const App = () => {
-  // moment.updateLocale("en", { week: { dow: 1 } });
-  // const today = moment();
+interface TaskType {
+  id: number;
+  description: string;
+  day: string;
+}
 
+const App = () => {
   const [today, setToday] = useState(moment());
   const startDay: Moment = today.clone().startOf("month").startOf("week");
 
@@ -34,8 +37,6 @@ const App = () => {
   useEffect(() => {
     const getHolidays = async () => {
       try {
-        console.log(today.format("YYYY"));
-
         const fetchedHolidays = await HolidaysService.getHolidaysUA(
           today.format("YYYY"),
         );
@@ -50,16 +51,37 @@ const App = () => {
     getHolidays();
   }, [today]);
 
+  // tasks
+  const [tasks, setTasks] = useState<TaskType[]>([]); // Explicitly type the state
+  const [filteredTasks, setFilteredTasks] = useState<TaskType[]>([]);
+
+  // filter tasks
+  const filterTasks = (searchText: string) => {
+    const result = tasks.filter((task) =>
+      task.description.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    setFilteredTasks(result);
+  };
+
+  const clearFilter = () => {
+    setFilteredTasks([]);
+  };
+
   return (
     <Wrapper>
-      <Header />
+      <Filter onSearch={filterTasks} onClearFilter={clearFilter} />
       <Navigation
         today={today}
         handlePrevMonth={handlePrevMonth}
         handleNextMonth={handleNextMonth}
         handleCurrentMonth={handleCurrentMonth}
       />
-      <CalendarGrid startDay={startDay} holidays={holidays} />{" "}
+      <CalendarGrid
+        startDay={startDay}
+        holidays={holidays}
+        tasks={filteredTasks.length !== 0 ? filteredTasks : tasks}
+        setTasks={setTasks}
+      />
     </Wrapper>
   );
 };
