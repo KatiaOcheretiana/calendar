@@ -2,29 +2,25 @@ import moment, { Moment } from "moment";
 import { useState } from "react";
 
 import { HolidayType } from "../../lib/services/holidaysService";
+import { TaskType } from "../../lib/types/taskType";
 import TaskForm from "../TaskForm";
 import {
+  CellWrapper,
   CurrentDay,
   DayWrapper,
   GridWrapper,
   HolidayItem,
   HolidayList,
   RowInCell,
-  SellWrapper,
+  ShowDayWrapper,
   StyledModal,
-  Task,
+  TaskItemWrapper,
   TaskList,
-  WeekDaysList,
 } from "./CalendarGrid.styled";
-
-interface TaskType {
-  id: number;
-  description: string;
-  day: string;
-}
 
 interface CalendarGridPropsType {
   startDay: Moment;
+  today: Moment;
   holidays: HolidayType[];
   tasks: TaskType[];
   setTasks: React.Dispatch<React.SetStateAction<TaskType[]>>;
@@ -35,6 +31,7 @@ const CalendarGrid = ({
   holidays,
   tasks,
   setTasks,
+  today,
 }: CalendarGridPropsType) => {
   const totalDays = 42;
   const day = startDay.clone();
@@ -43,9 +40,8 @@ const CalendarGrid = ({
     return newDay.isValid() ? newDay : null;
   });
 
-  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
   const isCurrentDay = (day: Moment) => moment().isSame(day, "day");
+  const isSelectedMonth = (day: Moment) => today.isSame(day, "month");
 
   const isHoliday = (day: Moment) => {
     const formattedDay = day.format("YYYY-MM-DD");
@@ -86,61 +82,82 @@ const CalendarGrid = ({
     toggleModal();
   };
 
+  console.log(tasks);
+
   return (
     <div>
-      <WeekDaysList>
-        {weekDays.map((day, index) => (
-          <li key={index}>{day}</li>
-        ))}
-      </WeekDaysList>
-      <GridWrapper>
-        {daysArray.map((dayItem) => (
-          <SellWrapper
-            key={dayItem?.unix()}
-            onDoubleClick={() => dayItem && handleCellClick(dayItem)}
-          >
-            <RowInCell $justifyContent="flex-end">
-              <DayWrapper>
-                {dayItem &&
-                  (isCurrentDay(dayItem) ? (
-                    <CurrentDay>{dayItem.format("D")}</CurrentDay>
-                  ) : (
-                    dayItem.format("D")
-                  ))}
-              </DayWrapper>
+      <GridWrapper $isHeader>
+        {[...Array(7)].map((_, i) => (
+          <CellWrapper $isHeader key={i}>
+            <RowInCell $justifyContent="flex-end" $pr={1}>
+              {moment()
+                .day(i + 1)
+                .format("ddd")}
             </RowInCell>
-            {dayItem && isHoliday(dayItem) && (
-              <HolidayList>
-                {holidays
-                  .filter(
-                    (holiday) => holiday.date === dayItem?.format("YYYY-MM-DD"),
-                  )
-                  .map((holiday, index) => (
-                    <HolidayItem key={index}>
-                      {holiday.name} ({holiday.countryCode})
-                    </HolidayItem>
-                  ))}
-              </HolidayList>
-            )}
-            {dayItem && (
-              <TaskList>
-                {tasks
-                  .filter((task) => task.day === dayItem.format("YYYY-MM-DD"))
-                  .map((task) => (
-                    <Task
-                      key={task.id}
-                      onDoubleClick={(e) => {
-                        e.stopPropagation();
-                        handleTaskClick(task);
-                      }}
-                    >
-                      {task.description}
-                    </Task>
-                  ))}
-              </TaskList>
-            )}
-          </SellWrapper>
+          </CellWrapper>
         ))}
+      </GridWrapper>
+      <GridWrapper>
+        {daysArray.map(
+          (dayItem) =>
+            dayItem && (
+              <CellWrapper
+                key={dayItem?.unix()}
+                onClick={() => dayItem && handleCellClick(dayItem)}
+                $selectedMonth={isSelectedMonth(dayItem)}
+              >
+                <RowInCell $justifyContent="flex-end">
+                  <ShowDayWrapper>
+                    <DayWrapper $selectedMonth={isSelectedMonth(dayItem)}>
+                      {dayItem &&
+                        (isCurrentDay(dayItem) ? (
+                          <CurrentDay>{dayItem.format("D")}</CurrentDay>
+                        ) : (
+                          dayItem.format("D")
+                        ))}
+                    </DayWrapper>
+                  </ShowDayWrapper>
+                  {dayItem && isHoliday(dayItem) && (
+                    <HolidayList>
+                      {holidays
+                        .filter(
+                          (holiday) =>
+                            holiday.date === dayItem?.format("YYYY-MM-DD"),
+                        )
+                        .map((holiday, index) => (
+                          <HolidayItem key={index}>
+                            {holiday.name} ({holiday.countryCode})
+                          </HolidayItem>
+                        ))}
+                    </HolidayList>
+                  )}
+                  {dayItem && (
+                    <TaskList>
+                      {tasks
+                        .filter(
+                          (task) =>
+                            task.date >= dayItem.format("X") &&
+                            task.date <=
+                              dayItem.clone().endOf("day").format("X"),
+                        )
+                        .map((task) => (
+                          <li key={task.id}>
+                            <TaskItemWrapper
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTaskClick(task);
+                              }}
+                            >
+                              {task.title}
+                            </TaskItemWrapper>
+                          </li>
+                        ))}
+                    </TaskList>
+                  )}
+                </RowInCell>
+              </CellWrapper>
+            ),
+        )}
       </GridWrapper>
 
       {isOpen && (

@@ -1,10 +1,7 @@
+import moment from "moment";
 import { useState } from "react";
 
-interface TaskType {
-  id: number;
-  description: string;
-  day: string;
-}
+import { TaskType } from "../../lib/types/taskType";
 
 interface TaskFormProps {
   task: TaskType | null;
@@ -14,12 +11,23 @@ interface TaskFormProps {
 }
 
 function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
-  const [description, setDescription] = useState(task?.description || "");
-  const [day, setDay] = useState(task?.day || defaultDay || "");
+  const [title, setTitle] = useState(task?.title || "");
+  const [date, setDate] = useState(
+    task?.date
+      ? moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm")
+      : defaultDay || "",
+  );
 
   const handleSave = () => {
-    if (!description.trim()) return;
-    onSave({ ...task, description, day } as TaskType);
+    if (!title.trim() || !date.trim()) return;
+
+    const unixDate = moment(date).unix();
+
+    onSave({
+      ...task,
+      title,
+      date: unixDate.toString(),
+    } as TaskType);
   };
 
   return (
@@ -27,11 +35,17 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
       <p>{task ? "Edit Task" : "Create Task"}</p>
       <input
         type="text"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Enter task description"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter task title"
+        required
       />
-      <input type="date" value={day} onChange={(e) => setDay(e.target.value)} />
+      <input
+        type="datetime-local"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        required
+      />
       <div>
         <button onClick={handleSave}>
           {task ? "Save Changes" : "Add Task"}
