@@ -2,6 +2,13 @@ import moment from "moment";
 import { useState } from "react";
 
 import { TaskType } from "../../lib/types/taskType";
+import {
+  Button,
+  ButtonsWrapper,
+  CancelButton,
+  Title,
+  TitleInput,
+} from "./TaskForm.styled";
 
 interface TaskFormProps {
   task: TaskType | null;
@@ -15,7 +22,9 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
   const [date, setDate] = useState(
     task?.date
       ? moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm")
-      : defaultDay || "",
+      : defaultDay
+        ? moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm")
+        : "",
   );
 
   const handleSave = () => {
@@ -26,32 +35,32 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
     onSave({
       ...task,
       title,
-      date: unixDate.toString(),
+      date: String(unixDate),
     } as TaskType);
   };
 
   return (
     <>
-      <p>{task ? "Edit Task" : "Create Task"}</p>
-      <input
+      <Title>{task ? "Edit Task" : "Create Task"}</Title>
+      <TitleInput
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Enter task title"
         required
       />
-      <input
+      <TitleInput
         type="datetime-local"
         value={date}
         onChange={(e) => setDate(e.target.value)}
         required
       />
-      <div>
-        <button onClick={handleSave}>
+      <ButtonsWrapper>
+        <Button onClick={handleSave}>
           {task ? "Save Changes" : "Add Task"}
-        </button>
-        <button onClick={onCancel}>Cancel</button>
-      </div>
+        </Button>
+        <CancelButton onClick={onCancel}>Cancel</CancelButton>
+      </ButtonsWrapper>
     </>
   );
 }

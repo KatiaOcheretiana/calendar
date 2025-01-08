@@ -1,9 +1,12 @@
 import moment, { Moment } from "moment";
-import { useState } from "react";
 
+import {
+  isCurrentDay,
+  isDayContainCurrentTask,
+  isSelectedMonth,
+} from "../../helpers";
 import { HolidayType } from "../../lib/services/holidaysService";
 import { TaskType } from "../../lib/types/taskType";
-import TaskForm from "../TaskForm";
 import {
   CellWrapper,
   CurrentDay,
@@ -13,7 +16,6 @@ import {
   HolidayList,
   RowInCell,
   ShowDayWrapper,
-  StyledModal,
   TaskItemWrapper,
   TaskList,
 } from "./CalendarGrid.styled";
@@ -24,14 +26,16 @@ interface CalendarGridPropsType {
   holidays: HolidayType[];
   tasks: TaskType[];
   setTasks: React.Dispatch<React.SetStateAction<TaskType[]>>;
+  openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
 }
 
 const CalendarGrid = ({
   startDay,
   holidays,
   tasks,
-  setTasks,
+  // setTasks,
   today,
+  openFormHandler,
 }: CalendarGridPropsType) => {
   const totalDays = 42;
   const day = startDay.clone();
@@ -40,49 +44,10 @@ const CalendarGrid = ({
     return newDay.isValid() ? newDay : null;
   });
 
-  const isCurrentDay = (day: Moment) => moment().isSame(day, "day");
-  const isSelectedMonth = (day: Moment) => today.isSame(day, "month");
-
   const isHoliday = (day: Moment) => {
     const formattedDay = day.format("YYYY-MM-DD");
     return holidays.some((holiday) => holiday.date === formattedDay);
   };
-
-  // Modal state
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
-
-  const toggleModal = () => setIsOpen(!isOpen);
-
-  const handleCellClick = (day: Moment) => {
-    setSelectedTask(null);
-    setSelectedDay(day.format("YYYY-MM-DD"));
-    toggleModal();
-  };
-
-  const handleTaskClick = (task: TaskType) => {
-    setSelectedTask(task);
-    setSelectedDay(null);
-    toggleModal();
-  };
-
-  const handleSaveTask = (updatedTask: TaskType) => {
-    setTasks((prev) => {
-      const taskIndex = prev.findIndex((task) => task.id === updatedTask.id);
-      if (taskIndex >= 0) {
-        const updatedTasks = [...prev];
-        updatedTasks[taskIndex] = updatedTask;
-        return updatedTasks;
-      } else {
-        return [...prev, { ...updatedTask, id: prev.length + 1 }];
-      }
-    });
-
-    toggleModal();
-  };
-
-  console.log(tasks);
 
   return (
     <div>
@@ -103,12 +68,16 @@ const CalendarGrid = ({
             dayItem && (
               <CellWrapper
                 key={dayItem?.unix()}
-                onClick={() => dayItem && handleCellClick(dayItem)}
-                $selectedMonth={isSelectedMonth(dayItem)}
+                $selectedMonth={isSelectedMonth(dayItem, today)}
               >
                 <RowInCell $justifyContent="flex-end">
                   <ShowDayWrapper>
-                    <DayWrapper $selectedMonth={isSelectedMonth(dayItem)}>
+                    <DayWrapper
+                      $selectedMonth={isSelectedMonth(dayItem, today)}
+                      onDoubleClick={() =>
+                        openFormHandler(String(dayItem?.unix()))
+                      }
+                    >
                       {dayItem &&
                         (isCurrentDay(dayItem) ? (
                           <CurrentDay>{dayItem.format("D")}</CurrentDay>
@@ -124,6 +93,7 @@ const CalendarGrid = ({
                           (holiday) =>
                             holiday.date === dayItem?.format("YYYY-MM-DD"),
                         )
+
                         .map((holiday, index) => (
                           <HolidayItem key={index}>
                             {holiday.name} ({holiday.countryCode})
@@ -134,19 +104,18 @@ const CalendarGrid = ({
                   {dayItem && (
                     <TaskList>
                       {tasks
-                        .filter(
-                          (task) =>
-                            task.date >= dayItem.format("X") &&
-                            task.date <=
-                              dayItem.clone().endOf("day").format("X"),
+                        .filter((task) =>
+                          isDayContainCurrentTask(task, dayItem),
                         )
+
+                        .sort((a, b) => Number(a.date) - Number(b.date))
+
                         .map((task) => (
                           <li key={task.id}>
                             <TaskItemWrapper
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleTaskClick(task);
-                              }}
+                              onDoubleClick={() =>
+                                openFormHandler(task.date, task)
+                              }
                             >
                               {task.title}
                             </TaskItemWrapper>
@@ -159,21 +128,6 @@ const CalendarGrid = ({
             ),
         )}
       </GridWrapper>
-
-      {isOpen && (
-        <StyledModal
-          isOpen={isOpen}
-          onBackgroundClick={toggleModal}
-          onEscapeKeydown={toggleModal}
-        >
-          <TaskForm
-            task={selectedTask}
-            defaultDay={selectedDay ?? undefined}
-            onSave={handleSaveTask}
-            onCancel={toggleModal}
-          />
-        </StyledModal>
-      )}
     </div>
   );
 };

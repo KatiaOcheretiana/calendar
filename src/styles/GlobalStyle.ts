@@ -59,5 +59,11 @@ export const GlobalStyle = createGlobalStyle`
     height: auto;
   }
 
+  #root{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
 
 `;

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Modal from "styled-react-modal";
 
 interface FridWrapperProps {
   $isHeader?: boolean;
@@ -67,6 +66,8 @@ export const DayWrapper = styled.div<DayWrapperProps>`
   align-content: center;
   justify-content: center;
   margin: 2px;
+
+  cursor: pointer;
 `;
 
 export const CurrentDay = styled.div`
@@ -117,15 +118,6 @@ export const HolidayItem = styled.li`
   font-size: 12px;
 `;
 
-export const StyledModal = Modal.styled`
- padding: 20px;
-
- display: flex;
- flex-direction: column;
- 
- gap: 10px;
- `;
-
 export const TaskList = styled.ul`
   display: flex;
   list-style-position: inside;
@@ -141,7 +133,6 @@ export const TaskItemWrapper = styled.button`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  width: 95%;
   border: unset;
   background: unset;
   color: black;
@@ -151,4 +142,6 @@ export const TaskItemWrapper = styled.button`
   text-align: left;
   background-color: white;
   border-radius: 6px;
+
+  width: 95%;
 `;
