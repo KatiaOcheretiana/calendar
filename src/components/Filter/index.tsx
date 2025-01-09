@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+import {
+  Button,
+  ButtonsWrapper,
+  CancelButton,
+  Form,
+  TitleInput,
+} from "./Filter.styled";
+
 interface FilterProps {
   onSearch: (text: string) => void;
   onClearFilter: () => void;
@@ -23,19 +31,21 @@ const Filter = ({ onSearch, onClearFilter }: FilterProps) => {
   };
 
   return (
-    <form onSubmit={handleSearchClick}>
-      <input
+    <Form onSubmit={handleSearchClick}>
+      <TitleInput
         type="text"
         name="search"
         value={searchText}
         onChange={handleInputChange}
         placeholder="Search tasks"
       />
-      <button type="submit">Search</button>
-      <button type="button" onClick={handleClearClick}>
-        Clear
-      </button>
-    </form>
+      <ButtonsWrapper>
+        <Button type="submit">Search</Button>
+        <CancelButton type="button" onClick={handleClearClick}>
+          Clear
+        </CancelButton>
+      </ButtonsWrapper>
+    </Form>
   );
 };
 

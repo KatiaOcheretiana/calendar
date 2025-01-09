@@ -125,7 +125,6 @@ const App = () => {
           today={today}
           holidays={holidays}
           tasks={filteredTasks.length !== 0 ? filteredTasks : tasks}
-          setTasks={setTasks}
           openFormHandler={openFormHandler}
         />
       </Wrapper>

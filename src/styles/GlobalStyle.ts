@@ -47,7 +47,8 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     /* font-family: sans-serif;  */
     color: black;
-    background-color: #f3f3f3;
+  background-color: rgb(236, 237, 237);
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
@@ -66,4 +67,24 @@ export const GlobalStyle = createGlobalStyle`
     position: relative;
   }
 
+
+
+ ::-webkit-scrollbar {
+    padding-left: 50px;
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(93, 137, 220);
+    border-radius: 4px;
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgb(115, 130, 241);
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+    }
+  }
 `;
