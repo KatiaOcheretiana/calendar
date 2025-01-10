@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   padding: 20px 0;
 `;
 
-export const FormPositionWrapper = styled.div`
+export const FormPositionWrapper = styled.form`
   position: absolute;
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.35);

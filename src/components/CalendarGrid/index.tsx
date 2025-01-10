@@ -1,4 +1,4 @@
-import { Moment } from "moment";
+import { Moment, unitOfTime } from "moment";
 
 import { HolidayType } from "../../lib/services/holidaysService";
 import { TaskType } from "../../lib/types/taskType";
@@ -12,6 +12,7 @@ interface CalendarGridPropsType {
   holidays: HolidayType[];
   tasks: TaskType[];
   openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
+  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
 }
 
 const CalendarGrid = ({
@@ -20,9 +21,10 @@ const CalendarGrid = ({
   tasks,
   today,
   openFormHandler,
+  setDisplayMode,
 }: CalendarGridPropsType) => {
   return (
-    <div>
+    <>
       <GridWrapper $isHeader>
         <CalendarHeader />
       </GridWrapper>
@@ -33,9 +35,10 @@ const CalendarGrid = ({
           holidays={holidays}
           tasks={tasks}
           today={today}
+          setDisplayMode={setDisplayMode}
         />
       </GridWrapper>
-    </div>
+    </>
   );
 };
 

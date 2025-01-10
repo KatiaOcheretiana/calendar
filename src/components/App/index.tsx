@@ -1,26 +1,31 @@
-import moment, { Moment } from "moment";
+import moment, { Moment, unitOfTime } from "moment";
 import { useEffect, useState } from "react";
 
+import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from "../../helpers/constants";
 import {
   HolidayType,
   HolidaysService,
 } from "../../lib/services/holidaysService";
 import { TaskType } from "../../lib/types/taskType";
 import { CalendarGrid } from "../CalendarGrid";
+import { DayShowComponent } from "../DayShowComponent";
 import { Filter } from "../Filter";
 import { Navigation } from "../Navigation";
 import TaskForm from "../TaskForm";
 import { FormPositionWrapper, FormWrapper, Wrapper } from "./App.styled";
 
 const App = () => {
+  const [displayMode, setDisplayMode] =
+    useState<unitOfTime.DurationConstructor>(DISPLAY_MODE_MONTH);
+
   const [today, setToday] = useState(moment());
   const startDay: Moment = today.clone().startOf("month").startOf("week");
 
   const handlePrevMonth = () => {
-    setToday((prev) => prev.clone().subtract("1", "month"));
+    setToday((prev) => prev.clone().subtract("1", displayMode));
   };
   const handleNextMonth = () => {
-    setToday((prev) => prev.clone().add("1", "month"));
+    setToday((prev) => prev.clone().add("1", displayMode));
   };
 
   const handleCurrentMonth = () => {
@@ -34,7 +39,7 @@ const App = () => {
 
   const closeModal = () => {
     setSelectedTask(null);
-    setIsOpen(!isOpen);
+    setIsOpen(false);
   };
 
   const openFormHandler = (date?: string, taskToUpdate?: TaskType) => {
@@ -119,14 +124,32 @@ const App = () => {
           handlePrevMonth={handlePrevMonth}
           handleNextMonth={handleNextMonth}
           handleCurrentMonth={handleCurrentMonth}
+          setDisplayMode={setDisplayMode}
+          displayMode={displayMode}
         />
-        <CalendarGrid
-          startDay={startDay}
-          today={today}
-          holidays={holidays}
-          tasks={filteredTasks.length !== 0 ? filteredTasks : tasks}
-          openFormHandler={openFormHandler}
-        />
+        {displayMode === DISPLAY_MODE_MONTH ? (
+          <CalendarGrid
+            startDay={startDay}
+            today={today}
+            holidays={holidays}
+            tasks={filteredTasks.length !== 0 ? filteredTasks : tasks}
+            openFormHandler={openFormHandler}
+            setDisplayMode={setDisplayMode}
+          />
+        ) : null}
+
+        {displayMode === DISPLAY_MODE_DAY ? (
+          <DayShowComponent
+            selectedTask={selectedTask}
+            setSelectedTask={setSelectedTask}
+            tasks={tasks}
+            today={today}
+            defaultDay={selectedDay ?? undefined}
+            onSave={handleSaveTask}
+            openFormHandler={openFormHandler}
+            onCancel={closeModal}
+          />
+        ) : null}
       </Wrapper>
     </>
   );

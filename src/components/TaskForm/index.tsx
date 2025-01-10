@@ -14,7 +14,7 @@ interface TaskFormProps {
   task: TaskType | null;
   defaultDay?: string;
   onSave: (data: TaskType) => void;
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
 function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {

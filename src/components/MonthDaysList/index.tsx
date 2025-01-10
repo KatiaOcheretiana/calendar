@@ -1,4 +1,4 @@
-import { Moment } from "moment";
+import { Moment, unitOfTime } from "moment";
 
 import { isDayContainCurrentTask } from "../../helpers";
 import { HolidayType } from "../../lib/services/holidaysService";
@@ -11,6 +11,7 @@ interface MonthDaysListPropsType {
   holidays: HolidayType[];
   tasks: TaskType[];
   openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
+  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
 }
 
 function MonthDaysList({
@@ -19,6 +20,7 @@ function MonthDaysList({
   tasks,
   today,
   openFormHandler,
+  setDisplayMode,
 }: MonthDaysListPropsType) {
   const totalDays = 42;
   const day = startDay.clone();
@@ -36,6 +38,7 @@ function MonthDaysList({
         tasks={tasks.filter((task) => isDayContainCurrentTask(task, dayItem))}
         openFormHandler={openFormHandler}
         dayItem={dayItem}
+        setDisplayMode={setDisplayMode}
       />
     ) : null,
   );

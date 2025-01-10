@@ -7,5 +7,5 @@ export const isSelectedMonth = (day: Moment, today: Moment) =>
   today.isSame(day, "month");
 
 export const isDayContainCurrentTask = (task: TaskType, dayItem: Moment) =>
-  task.date >= dayItem.format("X") &&
+  task.date >= dayItem.startOf("day").format("X") &&
   task.date <= dayItem.clone().endOf("day").format("X");

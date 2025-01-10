@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
 
@@ -18,7 +19,6 @@ export const MonthAndYear = styled.div`
 
 export const ControlButtonWrapper = styled.div`
   display: flex;
-
   gap: 6px;
 `;
 
@@ -38,7 +38,18 @@ export const Button = styled.button`
   }
 `;
 
-export const MonthButton = styled(Button)`
+interface MonthButtonPropsType {
+  $isPressed?: boolean;
+}
+
+export const MonthButton = styled(Button)<MonthButtonPropsType>`
   padding: 5px;
-  background-color: rgba(192, 189, 189, 0.47);
+  background-color: ${(props) =>
+    props.$isPressed ? "rgb(92, 129, 169)" : "rgba(192, 189, 189, 0.47)"};
+`;
+
+export const MonthAndDayButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;

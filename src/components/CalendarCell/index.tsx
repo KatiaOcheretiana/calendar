@@ -1,8 +1,8 @@
-import { Moment } from "moment";
-import { useState } from "react";
+import { Moment, unitOfTime } from "moment";
 
 import { CellWrapper, RowInCell } from "../../containers/StyledComponents";
 import { isCurrentDay, isSelectedMonth } from "../../helpers";
+import { DISPLAY_MODE_DAY } from "../../helpers/constants";
 import { HolidayType } from "../../lib/services/holidaysService";
 import { TaskType } from "../../lib/types/taskType";
 import {
@@ -22,6 +22,7 @@ interface CalendarCellPropsType {
   holidays: HolidayType[];
   tasks: TaskType[];
   openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
+  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
 }
 
 // Helper function to find holidays for a specific day
@@ -39,14 +40,21 @@ function CalendarCell({
   tasks,
   today,
   openFormHandler,
+  setDisplayMode,
 }: CalendarCellPropsType) {
-  const [showAllTasks, setShowAllTasks] = useState(false);
-
-  const toggleShowAllTasks = () => {
-    setShowAllTasks((prev) => !prev);
-  };
-
   const holidaysForDay = getHolidaysForDay(dayItem, holidays);
+
+  // const onDragEndHandler = (e, task) => {
+  //   const data = moment.unix(+task);
+  // };
+
+  // const onDropHandler = (e) => {
+  //   e.preventDefault();
+  // };
+
+  // const onDragOverHandler = (e) => {
+  //   e.preventDefault();
+  // };
 
   return (
     <CellWrapper $selectedMonth={isSelectedMonth(dayItem, today)}>
@@ -79,11 +87,19 @@ function CalendarCell({
         {tasks.length > 0 && (
           <>
             <ListTitle>Tasks list</ListTitle>
-            <TaskList>
-              {(showAllTasks ? tasks : tasks.slice(0, 2))
+            <TaskList
+            // onDrop={(e) => onDropHandler(e)}
+            // onDragOver={(e) => onDragOverHandler(e)}
+            >
+              {tasks
+                .slice(0, 2)
                 .sort((a, b) => Number(a.date) - Number(b.date))
                 .map((task) => (
-                  <li key={task.id}>
+                  <li
+                    key={task.id}
+                    // draggable
+                    // onDragEnd={(e) => onDragEndHandler(e, task)}
+                  >
                     <TaskItemWrapper
                       onDoubleClick={() => openFormHandler(task.date, task)}
                     >
@@ -93,8 +109,10 @@ function CalendarCell({
                 ))}
 
               {tasks.length > 2 && (
-                <TaskItemWrapper onClick={toggleShowAllTasks}>
-                  {showAllTasks ? "Show less..." : "Show more..."}
+                <TaskItemWrapper
+                  onClick={() => setDisplayMode(DISPLAY_MODE_DAY)}
+                >
+                  Show more...
                 </TaskItemWrapper>
               )}
             </TaskList>
