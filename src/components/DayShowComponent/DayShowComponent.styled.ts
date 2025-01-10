@@ -8,19 +8,6 @@ export const Wrapper = styled.div`
   margin: 50px 0;
 `;
 
-export const TasksListWrapper = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-export const TaskListItemWrapper = styled.li`
-  background-color: rgba(192, 189, 189, 0.47);
-  border-radius: 5px;
-  padding: 4px;
-  width: 100%;
-`;
-
 export const TaskItemWrapper = styled.button`
   position: relative;
   left: 2px;
@@ -32,11 +19,40 @@ export const TaskItemWrapper = styled.button`
   color: black;
   cursor: pointer;
   margin: 0;
-  padding: 4px;
+  padding: 2px 5px;
   text-align: left;
   background-color: white;
   border-radius: 6px;
-  width: 99%;
+  /* width: 99%; */
+
+  font-size: 16px;
+
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+`;
+
+export const ScaleWraper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+`;
+
+export const ScaleCellWrapper = styled.div`
+  flex-grow: 1;
+  position: relative;
+
+  margin-left: 32px;
+
+  border-bottom: 1px solid #464648;
+`;
+
+export const ScaleCellTimeWrapper = styled.div`
+  position: absolute;
+  left: -24px;
+  top: -6px;
+  font-size: 10px;
 `;
 
 export const SecondColumn = styled.div`
@@ -45,6 +61,12 @@ export const SecondColumn = styled.div`
   flex-direction: column;
 
   align-items: end;
+`;
+
+export const ScaleCellEventWrapper = styled.div`
+  min-height: 22px;
+  display: flex;
+  gap: 12px;
 `;
 
 export const TaskFormWrapper = styled.div`

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { TaskType } from "../../lib/types/taskType";
 import {
@@ -22,10 +22,16 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
   const [date, setDate] = useState(
     task?.date
       ? moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm")
-      : defaultDay
-        ? moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm")
-        : "",
+      : moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm"),
   );
+
+  useEffect(() => {
+    if (task) {
+      setDate(moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm"));
+    } else {
+      setDate(moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm"));
+    }
+  }, [task]);
 
   const handleSave = () => {
     if (!title.trim() || !date.trim()) return;

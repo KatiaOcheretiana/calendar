@@ -1,17 +1,20 @@
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 
 import { isDayContainCurrentTask } from "../../helpers";
+import { ITEMS_PER_DAY } from "../../helpers/constants";
 import { TaskType } from "../../lib/types/taskType";
 import TaskForm from "../TaskForm";
 import {
   Button,
   FormWrapper,
   NoTaskMsg,
+  ScaleCellEventWrapper,
+  ScaleCellTimeWrapper,
+  ScaleCellWrapper,
+  ScaleWraper,
   SecondColumn,
   TaskFormWrapper,
   TaskItemWrapper,
-  TaskListItemWrapper,
-  TasksListWrapper,
   Wrapper,
 } from "./DayShowComponent.styled";
 
@@ -41,17 +44,40 @@ function DayShowComponent({
     isDayContainCurrentTask(task, today),
   );
 
+  const cells = [...new Array(ITEMS_PER_DAY)].map((_, i) => {
+    const temp: TaskType[] = [];
+    tasksList.forEach((task) => {
+      if (+moment.unix(+task.date).format("H") === i) {
+        temp.push(task);
+      }
+    });
+    return temp;
+  });
   return (
     <Wrapper>
-      <TasksListWrapper>
-        {tasksList.map((task) => (
-          <TaskListItemWrapper key={task.id}>
-            <TaskItemWrapper onClick={() => setSelectedTask(task)}>
-              {task.title}
-            </TaskItemWrapper>
-          </TaskListItemWrapper>
-        ))}
-      </TasksListWrapper>
+      <div>
+        <ScaleWraper>
+          {" "}
+          {cells.map((tasks, i) => (
+            <ScaleCellWrapper key={i}>
+              <ScaleCellTimeWrapper>
+                {" "}
+                {i ? <>{`${i}`.padStart(2, "0")}:00</> : null}
+              </ScaleCellTimeWrapper>
+              <ScaleCellEventWrapper>
+                {tasks.map((task) => (
+                  <TaskItemWrapper
+                    key={task.id}
+                    onClick={() => setSelectedTask(task)}
+                  >
+                    {task.title}
+                  </TaskItemWrapper>
+                ))}
+              </ScaleCellEventWrapper>
+            </ScaleCellWrapper>
+          ))}
+        </ScaleWraper>
+      </div>
       <SecondColumn>
         <TaskFormWrapper>
           {selectedTask ? (
