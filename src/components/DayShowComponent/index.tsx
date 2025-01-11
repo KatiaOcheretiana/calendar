@@ -57,10 +57,7 @@ function DayShowComponent({
     return temp;
   });
 
-  const onDragEndHandler = (
-    e: React.DragEvent<HTMLButtonElement>,
-    task: TaskType,
-  ) => {
+  const onDragEndHandler = (task: TaskType) => {
     if (droppedHour === null) return;
 
     const updatedDate = moment
@@ -92,7 +89,7 @@ function DayShowComponent({
                     key={task.id}
                     onClick={() => setSelectedTask(task)}
                     draggable
-                    onDragEnd={(e) => onDragEndHandler(e, task)}
+                    onDragEnd={() => onDragEndHandler(task)}
                   >
                     {task.title}
                   </TaskItemWrapper>
