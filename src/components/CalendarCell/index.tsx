@@ -21,6 +21,13 @@ interface CalendarCellPropsType {
   dayItem: Moment;
 
   tasks: TaskType[];
+
+  onDropHandler: (e: React.DragEvent<HTMLLIElement>, dayItem: Moment) => void;
+  onDragOver: (e: React.DragEvent<HTMLLIElement>) => void;
+  onDragEndHandler: (
+    e: React.DragEvent<HTMLButtonElement>,
+    task: TaskType,
+  ) => void;
 }
 
 // Helper function to find holidays for a specific day
@@ -34,7 +41,9 @@ function getHolidaysForDay(
 
 function CalendarCell({
   dayItem,
-
+  onDropHandler,
+  onDragOver,
+  onDragEndHandler,
   tasks,
 }: CalendarCellPropsType) {
   const { today, holidays, setDisplayMode, openFormHandler } =
@@ -42,7 +51,11 @@ function CalendarCell({
   const holidaysForDay = getHolidaysForDay(dayItem, holidays);
 
   return (
-    <CellWrapper $selectedMonth={isSelectedMonth(dayItem, today)}>
+    <CellWrapper
+      $selectedMonth={isSelectedMonth(dayItem, today)}
+      onDrop={(e) => onDropHandler(e, dayItem)}
+      onDragOver={(e) => onDragOver(e)}
+    >
       <RowInCell $justifyContent="flex-end">
         <ShowDayWrapper>
           <DayWrapper
@@ -72,21 +85,22 @@ function CalendarCell({
         {tasks.length > 0 && (
           <>
             <ListTitle>Tasks list</ListTitle>
-            <TaskList
-            // onDrop={(e) => onDropHandler(e)}
-            // onDragOver={(e) => onDragOverHandler(e)}
-            >
+            <TaskList>
               {tasks
                 .slice(0, 2)
                 .sort((a, b) => Number(a.date) - Number(b.date))
                 .map((task) => (
-                  <li
-                    key={task.id}
-                    // draggable
-                    // onDragEnd={(e) => onDragEndHandler(e, task)}
-                  >
+                  <li key={task.id} draggable>
                     <TaskItemWrapper
                       onDoubleClick={() => openFormHandler(task.date, task)}
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData(
+                          "application/json",
+                          JSON.stringify({ id: task.id, date: task.date }),
+                        );
+                      }}
+                      onDragEnd={(e) => onDragEndHandler(e, task)}
                     >
                       {task.title}
                     </TaskItemWrapper>
