@@ -1,50 +1,100 @@
-# React + TypeScript + Vite
+# Calendar App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This project is a **calendar application** built using modern web development tools and best practices. It allows users to manage tasks, view holidays, and interact with the calendar through various functionalities such as filtering, task creation, editing, and drag-and-drop task reassignment.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Core Libraries and Frameworks
 
-- Configure the top-level `parserOptions` property like this:
+- **React.js**: For building the user interface.
+- **Vite**: For fast development and building.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+### TypeScript
+
+- Ensures type safety and robust code.
+
+### Date Management
+
+- **Moment.js**: For handling and manipulating dates and times.
+
+### Styling
+
+- **Styled-Components**: For styling the components with scoped and dynamic CSS.
+
+### Code Quality and Formatting
+
+- **Prettier**: For code formatting.
+- **ESLint**: For maintaining consistent and clean code.
+- **Husky**: For automating pre-commit checks to ensure clean code before committing.
+
+---
+
+## Features
+
+### General
+
+- Functional calendar with the ability to:
+  - Change months.
+  - Move back to the current month/day.
+  - Filter tasks by searching text.
+
+### Month Mode
+
+- Displays holidays and tasks for each day.
+- **Task Management**:
+  - **Create**: Double-click on a day's cell number to add a new task.
+  - **Edit**: Double-click on a task to edit it.
+  - **Reassign Tasks**: Drag and drop tasks between calendar cells to reassign them to different days.
+
+### Day Mode
+
+- Displays all tasks for a selected day.
+- **Task Management**:
+  - Reorder tasks within the same day using drag-and-drop functionality.
+
+---
+
+## Installation
+
+1. **Clone the repository:**
+
+   To get started, clone the repository to your local machine.
+
+   ```bash
+   git clone https://github.com/KatiaOcheretiana/calendar.git
+   cd calendar
+   ```
+
+2. **Install dependencies:**
+   I use npm, but you can use yarn instead
+
+   ```bash
+   npm install
+   ```
+
+3. **Create environment variables:**
+   In the root directory, create a .env.local file. This file will store your sensitive data such as API URLs and keys.
+
+   ```bash
+   VITE_APP_KEY=https://api.example.com
+   ```
+
+## Running the Application
+
+1. **Running the Application**
+   Start the development server:
+
+```bash
+ npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. **Access the app:**
+   Open your browser and navigate to:
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
+```bash
+http://localhost:5173
 ```
