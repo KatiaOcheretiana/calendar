@@ -1,4 +1,5 @@
 import moment, { Moment } from "moment";
+import { useState } from "react";
 
 import { isDayContainCurrentTask } from "../../helpers";
 import { ITEMS_PER_DAY } from "../../helpers/constants";
@@ -40,6 +41,8 @@ function DayShowComponent({
   openFormHandler,
   onCancel,
 }: DayShowComponentPropsType) {
+  const [droppedHour, setDroppedHour] = useState<number | null>(null);
+
   const tasksList = tasks.filter((task) =>
     isDayContainCurrentTask(task, today),
   );
@@ -53,13 +56,32 @@ function DayShowComponent({
     });
     return temp;
   });
+
+  const onDragEndHandler = (
+    e: React.DragEvent<HTMLButtonElement>,
+    task: TaskType,
+  ) => {
+    if (droppedHour === null) return;
+
+    const updatedDate = moment
+      .unix(+task.date)
+      .set({ hour: droppedHour, minute: 0 })
+      .unix();
+    onSave({ ...task, date: String(updatedDate) });
+  };
+
+  const onDropHandler = (e: React.DragEvent<HTMLDivElement>, i: number) => {
+    e.preventDefault();
+    setDroppedHour(i);
+  };
+
   return (
     <Wrapper>
       <div>
         <ScaleWraper>
           {" "}
           {cells.map((tasks, i) => (
-            <ScaleCellWrapper key={i}>
+            <ScaleCellWrapper key={i} onDrop={(e) => onDropHandler(e, i)}>
               <ScaleCellTimeWrapper>
                 {" "}
                 {i ? <>{`${i}`.padStart(2, "0")}:00</> : null}
@@ -69,6 +91,8 @@ function DayShowComponent({
                   <TaskItemWrapper
                     key={task.id}
                     onClick={() => setSelectedTask(task)}
+                    draggable
+                    onDragEnd={(e) => onDragEndHandler(e, task)}
                   >
                     {task.title}
                   </TaskItemWrapper>

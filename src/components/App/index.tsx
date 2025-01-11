@@ -142,7 +142,7 @@ const App = () => {
           <DayShowComponent
             selectedTask={selectedTask}
             setSelectedTask={setSelectedTask}
-            tasks={tasks}
+            tasks={filteredTasks.length !== 0 ? filteredTasks : tasks}
             today={today}
             defaultDay={selectedDay ?? undefined}
             onSave={handleSaveTask}
