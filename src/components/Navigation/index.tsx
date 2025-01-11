@@ -1,5 +1,4 @@
-import { Moment, unitOfTime } from "moment";
-
+import { useCalendarContext } from "../../CalendarContext";
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from "../../helpers/constants";
 import { ChevronIcon } from "../Icons";
 import {
@@ -11,23 +10,16 @@ import {
   Wrapper,
 } from "./Navigation.styled";
 
-interface NavigationPropType {
-  today: Moment;
-  handlePrevMonth: () => void;
-  handleNextMonth: () => void;
-  handleCurrentMonth: () => void;
-  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
-  displayMode: string;
-}
+const Navigation = () => {
+  const {
+    today,
+    handlePrevMonth,
+    handleNextMonth,
+    handleCurrentMonth,
+    setDisplayMode,
+    displayMode,
+  } = useCalendarContext();
 
-const Navigation = ({
-  today,
-  handlePrevMonth,
-  handleNextMonth,
-  handleCurrentMonth,
-  setDisplayMode,
-  displayMode,
-}: NavigationPropType) => {
   return (
     <Wrapper>
       <ControlButtonWrapper>

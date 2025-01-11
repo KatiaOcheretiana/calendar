@@ -1,6 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 
+import { useCalendarContext } from "../../CalendarContext";
 import { TaskType } from "../../lib/types/taskType";
 import {
   Button,
@@ -11,35 +12,42 @@ import {
 } from "./TaskForm.styled";
 
 interface TaskFormProps {
-  task: TaskType | null;
-  defaultDay?: string;
-  onSave: (data: TaskType) => void;
   onCancel?: () => void;
 }
 
-function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
-  const [title, setTitle] = useState(task?.title || "");
+function TaskForm({ onCancel }: TaskFormProps) {
+  const { selectedTask, selectedDay, handleSaveTask } = useCalendarContext();
+
+  const [title, setTitle] = useState(selectedTask?.title || "");
   const [date, setDate] = useState(
-    task?.date
-      ? moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm")
-      : moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm"),
+    selectedTask?.date
+      ? moment.unix(Number(selectedTask.date)).format("YYYY-MM-DDTHH:mm")
+      : moment
+          .unix(Number(selectedDay ?? undefined))
+          .format("YYYY-MM-DDTHH:mm"),
   );
 
   useEffect(() => {
-    if (task) {
-      setDate(moment.unix(Number(task.date)).format("YYYY-MM-DDTHH:mm"));
+    if (selectedTask) {
+      setDate(
+        moment.unix(Number(selectedTask.date)).format("YYYY-MM-DDTHH:mm"),
+      );
     } else {
-      setDate(moment.unix(Number(defaultDay)).format("YYYY-MM-DDTHH:mm"));
+      setDate(
+        moment
+          .unix(Number(selectedDay ?? undefined))
+          .format("YYYY-MM-DDTHH:mm"),
+      );
     }
-  }, [task]);
+  }, [selectedTask]);
 
   const handleSave = () => {
     if (!title.trim() || !date.trim()) return;
 
     const unixDate = moment(date).unix();
 
-    onSave({
-      ...task,
+    handleSaveTask({
+      ...selectedTask,
       title,
       date: String(unixDate),
     } as TaskType);
@@ -47,7 +55,7 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
 
   return (
     <>
-      <Title>{task ? "Edit Task" : "Create Task"}</Title>
+      <Title>{selectedTask ? "Edit Task" : "Create Task"}</Title>
       <TitleInput
         type="text"
         value={title}
@@ -63,7 +71,7 @@ function TaskForm({ task, defaultDay, onSave, onCancel }: TaskFormProps) {
       />
       <ButtonsWrapper>
         <Button onClick={handleSave}>
-          {task ? "Save Changes" : "Add Task"}
+          {selectedTask ? "Save Changes" : "Add Task"}
         </Button>
         <CancelButton onClick={onCancel}>Cancel</CancelButton>
       </ButtonsWrapper>

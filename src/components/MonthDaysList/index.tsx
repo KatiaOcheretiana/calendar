@@ -1,27 +1,15 @@
-import { Moment, unitOfTime } from "moment";
+import { Moment } from "moment";
 
+import { useCalendarContext } from "../../CalendarContext";
 import { isDayContainCurrentTask } from "../../helpers";
-import { HolidayType } from "../../lib/services/holidaysService";
 import { TaskType } from "../../lib/types/taskType";
 import { CalendarCell } from "../CalendarCell";
 
-interface MonthDaysListPropsType {
-  startDay: Moment;
-  today: Moment;
-  holidays: HolidayType[];
-  tasks: TaskType[];
-  openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
-  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
-}
+function MonthDaysList({ tasks }: { tasks: TaskType[] }) {
+  const { today } = useCalendarContext();
 
-function MonthDaysList({
-  startDay,
-  holidays,
-  tasks,
-  today,
-  openFormHandler,
-  setDisplayMode,
-}: MonthDaysListPropsType) {
+  const startDay: Moment = today.clone().startOf("month").startOf("week");
+
   const totalDays = 42;
   const day = startDay.clone();
   const daysArray = Array.from({ length: totalDays }, () => {
@@ -33,12 +21,8 @@ function MonthDaysList({
     dayItem ? (
       <CalendarCell
         key={dayItem?.unix()}
-        holidays={holidays}
-        today={today}
         tasks={tasks.filter((task) => isDayContainCurrentTask(task, dayItem))}
-        openFormHandler={openFormHandler}
         dayItem={dayItem}
-        setDisplayMode={setDisplayMode}
       />
     ) : null,
   );

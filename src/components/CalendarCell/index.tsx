@@ -1,5 +1,6 @@
-import { Moment, unitOfTime } from "moment";
+import { Moment } from "moment";
 
+import { useCalendarContext } from "../../CalendarContext";
 import { CellWrapper, RowInCell } from "../../containers/StyledComponents";
 import { isCurrentDay, isSelectedMonth } from "../../helpers";
 import { DISPLAY_MODE_DAY } from "../../helpers/constants";
@@ -18,11 +19,8 @@ import {
 
 interface CalendarCellPropsType {
   dayItem: Moment;
-  today: Moment;
-  holidays: HolidayType[];
+
   tasks: TaskType[];
-  openFormHandler: (date?: string, taskToUpdate?: TaskType) => void;
-  setDisplayMode: (data: unitOfTime.DurationConstructor) => void;
 }
 
 // Helper function to find holidays for a specific day
@@ -36,25 +34,12 @@ function getHolidaysForDay(
 
 function CalendarCell({
   dayItem,
-  holidays,
+
   tasks,
-  today,
-  openFormHandler,
-  setDisplayMode,
 }: CalendarCellPropsType) {
+  const { today, holidays, setDisplayMode, openFormHandler } =
+    useCalendarContext();
   const holidaysForDay = getHolidaysForDay(dayItem, holidays);
-
-  // const onDragEndHandler = (e, task) => {
-  //   const data = moment.unix(+task);
-  // };
-
-  // const onDropHandler = (e) => {
-  //   e.preventDefault();
-  // };
-
-  // const onDragOverHandler = (e) => {
-  //   e.preventDefault();
-  // };
 
   return (
     <CellWrapper $selectedMonth={isSelectedMonth(dayItem, today)}>

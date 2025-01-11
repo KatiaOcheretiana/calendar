@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useCalendarContext } from "../../CalendarContext";
 import {
   Button,
   ButtonsWrapper,
@@ -8,12 +9,9 @@ import {
   TitleInput,
 } from "./Filter.styled";
 
-interface FilterProps {
-  onSearch: (text: string) => void;
-  onClearFilter: () => void;
-}
+const Filter = () => {
+  const { filterTasks, clearFilter } = useCalendarContext();
 
-const Filter = ({ onSearch, onClearFilter }: FilterProps) => {
   const [searchText, setSearchText] = useState<string>("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,12 +20,12 @@ const Filter = ({ onSearch, onClearFilter }: FilterProps) => {
 
   const handleSearchClick = (event: React.FormEvent) => {
     event.preventDefault();
-    onSearch(searchText);
+    filterTasks(searchText);
   };
 
   const handleClearClick = () => {
     setSearchText("");
-    onClearFilter();
+    clearFilter();
   };
 
   return (
